@@ -1,0 +1,72 @@
+[
+  {
+    "title": "Todo lo que debe saber sobre el salario mínimo de 2026 que decretó el Gobierno",
+    "description": "La medida impacta a un total de 2,4 millones de trabajadores y sus familias, que suman alrededor de 10 millones de personas",
+    "date": "2026-01-01",
+    "url": "https://www.larepublica.co/economia/todo-lo-que-debe-saber-sobre-el-salario-minimo-de-2026-que-decreto-el-gobierno-4331996",
+    "imageUrl": "assets/noti_emplea_10.jpeg"
+  },
+  {
+    "title": "Trabajadores colombianos que recibirán doble prima en junio 2025: conozca fechas y requisitos que debe cumplir",
+    "description": "Puede tener un impulso en sus finanzas si cumple los estándares para tener el doble pago",
+    "date": "2025-06-01",
+    "url": "https://www.eltiempo.com/cultura/gente/trabajadores-colombianos-que-recibiran-doble-prima-en-junio-2025-conozca-las-fechas-y-requisitos-que-debe-cumplir-3456565",
+    "imageUrl": "assets/noti_emplea_9.jpeg"
+  },
+  {
+    "title": "Trabajadores colombianos que recibirán doble prima en junio 2025",
+    "description": "Puede tener un impulso en sus finanzas si cumple los estándares para tener el doble pago.",
+    "date": "2025-06-01",
+    "url": "https://www.eltiempo.com/cultura/gente/trabajadores-colombianos-que-recibiran-doble-prima-en-junio-2025-conozca-las-fechas-y-requisitos-que-debe-cumplir-3456565",
+    "imageUrl": "assets/noti_emplea_7.jpeg"
+  },
+  {
+    "title": "Trabajadoras piden tramitar proyecto de formalización laboral para empleadas domésticas en Colombia",
+    "description": "La iniciativa busca garantizar derechos básicos como salario justo, seguridad social y condiciones dignas.",
+    "date": "2025-04-08",
+    "url": "https://caracol.com.co/2025/04/08/trabajadoras-piden-tramitar-proyecto-de-formalizacion-laboral-para-empleadas-domesticas-en-colombia/",
+    "imageUrl": "assets/noti_emplea_8.jpeg"
+  },
+  {
+    "title": "Definen monto que deben pagar de prima a trabajadores domésticos",
+    "description": "El gobierno ha establecido un monto específico para la prima de servicios de las trabajadoras domésticas.",
+    "date": null,
+    "url": "https://www.alertabogota.com/noticias/economia-de-bolsillo/definen-monto-que-deben-pagar-de-prima-trabajadores-domesticos",
+    "imageUrl": "assets/noti_emplea_1.jpg"
+  },
+  {
+    "title": "Ministerio de Trabajo insiste en contratos laborales para trabajadoras domésticas",
+    "description": "El Ministerio del Trabajo reafirma la necesidad de contratos formales para empleadas del hogar.",
+    "date": "2024-02-24",
+    "url": "https://www.infobae.com/colombia/2024/02/24/ministerio-de-trabajo-insistio-en-que-las-trabajadoras-domesticas-deberan-tener-contrato-laboral/",
+    "imageUrl": "assets/noti_emplea_2.jpg"
+  },
+  {
+    "title": "Cuánto y cómo se debe pagar a un empleado doméstico en Colombia en 2024",
+    "description": "Detalles sobre las nuevas normativas de pago para empleados domésticos este año.",
+    "date": "2024-01-01",
+    "url": "https://www.eltiempo.com/economia/finanzas-personales/cuanto-y-como-se-debe-pagar-a-un-empleado-domestico-en-colombia-en-2024-841172",
+    "imageUrl": "assets/noti_emplea_3.jpg"
+  },
+  {
+    "title": "Corte Constitucional disminuye jornada laboral de empleadas domésticas internas",
+    "description": "La Corte reduce la jornada laboral para trabajadoras domésticas que viven en el hogar.",
+    "date": null,
+    "url": "https://www.elespectador.com/judicial/corte-constitucional-disminuye-jornada-laboral-de-empleadas-domesticas-internas/",
+    "imageUrl": "assets/noti_emplea_4.jpg"
+  },
+  {
+    "title": "Ministerio del Trabajo confirma beneficios económicos para contratantes de empleados domésticos",
+    "description": "Se garantizan beneficios económicos adicionales para quienes contraten empleados del servicio doméstico.",
+    "date": "2024-10-08",
+    "url": "https://www.infobae.com/colombia/2024/10/08/ministerio-del-trabajo-confirmo-que-quienes-contraten-empleados-del-servicio-domestico-recibiran-este-beneficio-economico/",
+    "imageUrl": "assets/noti_emplea_5.jpg"
+  },
+  {
+    "title": "Reforma laboral para contratos de empleadas domésticas",
+    "description": "La nueva reforma obliga a cumplir con ciertos requisitos al contratar a una empleada del servicio.",
+    "date": "2024-10-09",
+    "url": "https://www.infobae.com/colombia/2024/10/09/reforma-laboral-para-hacerle-un-contrato-a-una-empleada-del-servicio-ahora-hay-que-cumplir-con-este-requisito/",
+    "imageUrl": "assets/noti_emplea_6.jpg"
+  }
+]

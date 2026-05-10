@@ -2,13 +2,14 @@ const dayjs = require('dayjs');
 const jwt = require('jsonwebtoken');
 
 function createToken(user) {
-    const obj = {
-        userId: user.id,
-        username: user.name,
-        exp_date: dayjs().add(30, 'minutes').unix(),
-        roll: user.roll
-    }
-    return jwt.sign(obj, 'escuela')
+  const obj = {
+    userId: user.id,
+    name: user.name,
+    loginUsername: user.username,
+    exp_date: dayjs().add(30, 'minutes').unix(),
+    rol_type: user.rol_type,
+  };
+  return jwt.sign(obj, 'escuela');
 }
 
 

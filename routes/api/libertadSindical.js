@@ -1,29 +1,33 @@
 const router = require('express').Router();
-const LibertadModel = require('../../models/libertadsindical.model');
+const {
+  fetchLibertadById,
+  patchLibertadFromBody,
+} = require('../../models/supabaseLibertadSindical.model');
 const { checkToken, checkAdmin } = require('../middlewares');
 
-//--------------- RUTAS LIBERTAD SINDICAL -----------------//
+//--------------- RUTAS LIBERTAD SINDICAL (Supabase cms_libertad_sindical) -----------------//
 
-//Ver contenido Libertad Sindical
 router.get('/:idContent', async (req, res) => {
-    const { idContent } = req.params;
-    try {
-        const [results] = await LibertadModel.getLibertadById(idContent);
-        res.json(results[0]);
-    } catch (error) {
-        res.json({ error: error.message })
+  const { idContent } = req.params;
+  try {
+    const row = await fetchLibertadById(idContent);
+    if (!row) {
+      return res.status(404).json({ error: 'Contenido no encontrado' });
     }
-})
+    res.json(row);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//Actualizar Contenido Libertad Sindical
 router.put('/update/:id', checkToken, checkAdmin, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const results = await LibertadModel.updateLibertad(id, req.body);
-        res.json(results)
-    } catch (error) {
-        res.json({ error: error.message })
-    }
-})
+  const { id } = req.params;
+  try {
+    const out = await patchLibertadFromBody(id, req.body);
+    res.json(out);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

@@ -1,29 +1,31 @@
 const router = require('express').Router();
-const EmpleadorModel = require('../../models/empleador.model');
+const {
+  fetchEmpleadorById,
+  patchEmpleadorFromBody,
+} = require('../../models/supabaseEmpleador.model');
 const { checkToken, checkAdmin } = require('../middlewares');
 
-// --------------- EMPLEADOR -----
-
-//Ver contenido empleador
 router.get('/:idContent', async (req, res) => {
-    const { idContent } = req.params;
-    try {
-        const [results] = await EmpleadorModel.getEmpleadores(idContent);
-        res.json(results[0])
-    } catch (error) {
-        res.json({ error: error.message })
+  const { idContent } = req.params;
+  try {
+    const row = await fetchEmpleadorById(idContent);
+    if (!row) {
+      return res.status(404).json({ error: 'Contenido no encontrado' });
     }
-})
+    res.json(row);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//Actualizar Contenido empleador
 router.put('/update/:id', checkToken, checkAdmin, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const [results] = await EmpleadorModel.updateEmpleador(id, req.body);
-        res.json(results)
-    } catch (error) {
-        res.json({ error: error.message })
-    }
-})
+  const { id } = req.params;
+  try {
+    const out = await patchEmpleadorFromBody(id, req.body);
+    res.json(out);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

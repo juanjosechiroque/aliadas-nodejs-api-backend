@@ -1,3 +1,4 @@
+/** @deprecated Empleador en MySQL; la API usa `supabaseEmpleador.model.js` y `public.cms_empleador`. */
 const db = require('../config/db').promise();
 
 //------------- EMPLEADORES ----------

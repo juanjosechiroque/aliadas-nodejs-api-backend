@@ -1,3 +1,4 @@
+/** @deprecated Usuarios en MySQL; la API usa `supabaseUsers.model.js` y `public.users`. */
 const db = require('../config/db').promise();
 
 //--------------- USUARIOS MODEL ------------------//

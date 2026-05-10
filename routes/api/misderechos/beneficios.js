@@ -1,30 +1,33 @@
 const router = require('express').Router();
-const BeneficiosModel = require('../../../models/misderechos/beneficios.model');
+const {
+  fetchBeneficiosById,
+  patchBeneficiosFromBody,
+} = require('../../../models/supabaseBeneficios.model');
 const { checkToken, checkAdmin } = require('../../middlewares');
-//--------------- SALARIO -----------------//
 
-//Ver contenido Salario
+//--------------- RUTAS BENEFICIOS (Supabase cms_beneficios) -----------------//
+
 router.get('/:idContent', async (req, res) => {
-    const { idContent } = req.params;
-    try {
-        const [results] = await BeneficiosModel.getBeneficios(idContent);
-        res.json(results[0]);
-    } catch (error) {
-        res.json({ error: error.message })
+  const { idContent } = req.params;
+  try {
+    const row = await fetchBeneficiosById(idContent);
+    if (!row) {
+      return res.status(404).json({ error: 'Contenido no encontrado' });
     }
-})
+    res.json(row);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-//Actualizar Contenido Salario
 router.put('/update/:id', checkToken, checkAdmin, async (req, res) => {
-    const { id } = req.params;
-    try {
-        const [results] = await BeneficiosModel.updateBeneficios(id, req.body);
-        res.json(results)
-    } catch (error) {
-        res.json({ error: error.message })
-    }
-})
-
-
+  const { id } = req.params;
+  try {
+    const out = await patchBeneficiosFromBody(id, req.body);
+    res.json(out);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const db = require('../../config/db').promise();
+/** @deprecated Contenido migrado a Supabase (modelo supabase* correspondiente). */const db = require('../../config/db').promise();
 
 //--------------- JORNADA LABORAL MODEL ------------------//
 const getJornada = (id) => {

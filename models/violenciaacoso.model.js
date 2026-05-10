@@ -1,3 +1,4 @@
+/** @deprecated La API usa `supabaseViolenciaAcoso.model.js` (Supabase `public.cms_violencia_acoso`). */
 const db = require('../config/db').promise();
 
 //--------------- VIOLENCIA MODEL ------------------//

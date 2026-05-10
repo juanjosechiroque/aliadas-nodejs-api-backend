@@ -1,3 +1,4 @@
+/** @deprecated La API `/api/libertadsindical` usa `supabaseLibertadSindical.model.js` (Supabase `public.cms_libertad_sindical`). Este modelo queda por compatibilidad con seeds MySQL o scripts. */
 const db = require('../config/db').promise();
 
 //--------------- LIBERTAD SINDICAL MODEL ------------------//

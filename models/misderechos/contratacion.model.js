@@ -1,3 +1,4 @@
+/** @deprecated La API usa `supabaseContratacion.model.js` (Supabase `public.cms_contratacion`). */
 const db = require('../../config/db').promise();
 
 const getContratacion = (id) => {

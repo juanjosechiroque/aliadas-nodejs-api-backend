@@ -1,0 +1,8 @@
+{
+  "name": "Admin",
+  "last_name": "Sistema",
+  "username": "admin",
+  "password_plain": "changeme",
+  "rol_type": "admin",
+  "is_deleted": false
+}

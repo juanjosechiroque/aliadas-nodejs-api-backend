@@ -1,3 +1,4 @@
+/** @deprecated Clientes en MySQL; la API usa `supabaseCustomers.model.js` y `public.customers`. */
 const db = require('../config/db').promise();
 
 //-------------------- CUSTOMERS MODEL ------------//

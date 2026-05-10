@@ -1,3 +1,4 @@
+/** @deprecated La API usa `supabaseBeneficios.model.js` (Supabase `public.cms_beneficios`). */
 const db = require('../../config/db').promise();
 
 //--------------- SEGURIDAD SOCIAL MODEL ------------------//
