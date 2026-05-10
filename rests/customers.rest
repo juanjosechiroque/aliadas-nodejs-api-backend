@@ -1,0 +1,17 @@
+//--------------------  CUSTOMERS --------------------------//
+
+### Ver todos los customers
+GET https://aliadasapp-c7b7f9ab639b.herokuapp.com/api/customers
+
+### Crear un customer
+POST https://aliadasapp-c7b7f9ab639b.herokuapp.com/api/customers/create
+Content-Type: application/json
+
+{
+    "tipo": "empleado",
+    "fecha": "{{$localDatetime iso8601}}",
+    "isDelete": 0
+}
+
+### Eliminar un Customer
+DELETE https://aliadasapp-c7b7f9ab639b.herokuapp.com/api/customers/delete/29

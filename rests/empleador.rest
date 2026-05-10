@@ -1,0 +1,4 @@
+//--------------  BENEFICIOS ------------------//
+
+### Listar Contenido
+GET https://aliadasapp-c7b7f9ab639b.herokuapp.com/api/empleador/1

@@ -1,0 +1,17 @@
+const db = require('../config/db').promise();
+
+//--------------- LIBERTAD SINDICAL MODEL ------------------//
+
+//Listar Contenido Libertad Sindical
+const getLibertadById = (id) => {
+    return db.query('SELECT * FROM libertad_sindical WHERE id = ?', [id])
+}
+
+const updateLibertad = (id, { descripcion, titulo_1, texto_1, titulo_2, texto_2, titulo_3, texto_3, titulo_4, texto_4, titulo_5, texto_5, titulo_6, texto_6, titulo_7, texto_7, titulo_8, texto_8, titulo_9, texto_9, titulo_10, texto_10 }) => {
+    return db.query('UPDATE libertad_sindical SET descripcion = ?, titulo_1 = ?, texto_1 = ?, titulo_2 = ?, texto_2 = ?, titulo_3 = ?, texto_3 = ?, titulo_4 = ?, texto_4 = ?, titulo_5 = ?, texto_5 = ?, titulo_6 = ?, texto_6 = ?, titulo_7 = ?, texto_7 = ?, titulo_8 = ?, texto_8 = ?, titulo_9 = ?, texto_9 = ?, titulo_10 = ?, texto_10 = ? WHERE id = ?', [descripcion, titulo_1, texto_1, titulo_2, texto_2, titulo_3, texto_3, titulo_4, texto_4, titulo_5, texto_5, titulo_6, texto_6, titulo_7, texto_7, titulo_8, texto_8, titulo_9, texto_9, titulo_10, texto_10, id])
+}
+
+
+module.exports = {
+    getLibertadById, updateLibertad
+}
