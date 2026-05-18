@@ -1,13 +1,3 @@
-/**
- * Seed Supabase: todas las tablas CMS + usuario desde scripts/seed/*.json.
- *
- *   node scripts/supabase-seed.js
- *
- * Usuario: password_plain en users_seed.json → bcrypt en Supabase (campo password).
- *
- * Noticias: node scripts/supabase-news-import.js (scripts/README.md)
- */
-
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
@@ -37,12 +27,19 @@ const CMS_JOBS = [
 function loadEnvFiles() {
   const backendEnv = path.join(backendRoot, '.env');
   if (fs.existsSync(backendEnv)) require('dotenv').config({ path: backendEnv });
-  if (fs.existsSync(frontEnvPath)) require('dotenv').config({ path: frontEnvPath });
+  if (fs.existsSync(frontEnvPath))
+    require('dotenv').config({ path: frontEnvPath });
 }
 
 function credentials() {
-  const url = (process.env.SUPABASE_URL || LOCAL_SUPABASE_URL || '').trim().replace(/\/$/, '');
-  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || LOCAL_SERVICE_ROLE_KEY || '').trim();
+  const url = (process.env.SUPABASE_URL || LOCAL_SUPABASE_URL || '')
+    .trim()
+    .replace(/\/$/, '');
+  const key = (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    LOCAL_SERVICE_ROLE_KEY ||
+    ''
+  ).trim();
   return { url, key };
 }
 

@@ -1,22 +1,4 @@
 #!/usr/bin/env node
-/**
- * Importar noticias a Supabase:
- * 1) Optimiza imágenes locales con sharp (JPEG/WebP alta calidad, PNG sin pérdida; GIF sin tocar)
- * 2) Sube al bucket de Storage
- * 3) Inserta filas en public.news con imageUrl = URL pública del objeto
- *
- * Requiere haber ejecutado antes scripts/supabase-schema.sql en Supabase (tabla news + bucket).
- *
- * Variables (o .env del backend y, si no hay claves, ../aliadas-front/.env):
- *   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
- *   SUPABASE_NEWS_BUCKET (opcional, default aliadas-news)
- *   NOTICIAS_JSON (opcional) — default scripts/seed/news_seed.json
- *   NOTICIAS_ASSETS_ROOT (opcional) — carpeta que contiene los archivos bajo imageUrl.
- *     Default: ../aliadas-front/src/assets (hermano del backend en repos típicos).
- *
- * Ejecutar (desde raíz del backend): node scripts/supabase-news-import.js
- */
-
 const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
@@ -28,7 +10,13 @@ const LOCAL_NEWS_BUCKET = 'aliadas-news';
 
 const scriptsDir = __dirname;
 const backendRoot = path.join(scriptsDir, '..');
-const frontSiblingAssets = path.join(backendRoot, '..', 'aliadas-front', 'src', 'assets');
+const frontSiblingAssets = path.join(
+  backendRoot,
+  '..',
+  'aliadas-front',
+  'src',
+  'assets'
+);
 
 dotenv.config({ path: path.join(backendRoot, '.env') });
 dotenv.config({ path: path.join(backendRoot, '..', 'aliadas-front', '.env') });
@@ -40,11 +28,7 @@ const jsonPath =
 const assetsRoot =
   (process.env.NOTICIAS_ASSETS_ROOT || '').trim() || frontSiblingAssets;
 
-const supabaseUrl = (
-  process.env.SUPABASE_URL ||
-  LOCAL_SUPABASE_URL ||
-  ''
-)
+const supabaseUrl = (process.env.SUPABASE_URL || LOCAL_SUPABASE_URL || '')
   .trim()
   .replace(/\/$/, '');
 const serviceKey = (
@@ -85,7 +69,9 @@ async function compressKeepingFormat(localPath, inputBuffer) {
     let out;
 
     if (ext === '.png') {
-      out = await sharp(inputBuffer).png({ compressionLevel: 9, effort: 10 }).toBuffer();
+      out = await sharp(inputBuffer)
+        .png({ compressionLevel: 9, effort: 10 })
+        .toBuffer();
     } else if (ext === '.webp') {
       out = await sharp(inputBuffer)
         .webp({ quality: 92, effort: 6, smartSubsample: true })
@@ -221,7 +207,10 @@ async function main() {
     }
 
     const buf = fs.readFileSync(localPath);
-    const { buffer: optimized, mime } = await compressKeepingFormat(localPath, buf);
+    const { buffer: optimized, mime } = await compressKeepingFormat(
+      localPath,
+      buf
+    );
     if (optimized.length < buf.length) {
       console.log(
         `  Optimizada: ${(buf.length / 1024).toFixed(1)} KB → ${(optimized.length / 1024).toFixed(1)} KB`
@@ -245,7 +234,9 @@ async function main() {
     await insertNewsRow(payload);
   }
 
-  console.log(`Listo: ${rows.length} imágenes en bucket "${bucket}" y ${rows.length} filas en news.`);
+  console.log(
+    `Listo: ${rows.length} imágenes en bucket "${bucket}" y ${rows.length} filas en news.`
+  );
 }
 
 main().catch((err) => {

@@ -3,23 +3,40 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon ./bin/www",
-    "start": "node ./bin/www"
+    "dev": "nodemon server.js",
+    "start": "node server.js",
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate": "npm run lint && npm run format:check",
+    "test:smoke": "node scripts/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=24.0.0"
   },
   "dependencies": {
-    "bcrypt": "^5.1.0",
-    "cookie-parser": "~1.4.6",
-    "cors": "^2.8.5",
-    "dayjs": "^1.11.8",
-    "debug": "~2.6.9",
-    "dotenv": "^16.3.1",
-    "express": "~4.16.4",
-    "hbs": "~4.0.4",
-    "http-errors": "~1.6.3",
-    "jsonwebtoken": "^9.0.0",
-    "morgan": "~1.9.1",
-    "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.4.3",
-    "sharp": "^0.33.5"
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "debug": "^4.4.3",
+    "dotenv": "^17.4.2",
+    "express": "~5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.1.0",
+    "http-errors": "^2.0.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.1",
+    "multer": "^2.1.1",
+    "sanitize-html": "^2.17.0",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.6.0",
+    "nodemon": "^3.1.14",
+    "prettier": "^3.8.3"
   }
 }
