@@ -6,6 +6,14 @@ const {
 } = require('../../middleware/auth-cookie');
 const { cookieMaxAgeMsFromExpiresIn } = require('../../utils/jwt');
 const { jwtExpiresIn } = require('../../config');
+const { isSecurityAdmin } = require('../../middleware/auth');
+
+function sendServiceError(res, error, context) {
+  if (error && error.statusCode) {
+    return res.status(error.statusCode).json({ error: error.message });
+  }
+  return sendServerError(res, error, context);
+}
 
 async function list(_req, res) {
   try {
@@ -36,7 +44,7 @@ async function create(req, res) {
     }
     res.json(row);
   } catch (error) {
-    sendServerError(res, error, 'users.create');
+    sendServiceError(res, error, 'users.create');
   }
 }
 
@@ -51,7 +59,6 @@ async function login(req, res) {
     setAuthCookie(res, result.token, maxAge);
     res.json({
       success: 'Login correcto',
-      token: result.token,
       rol_type: result.rol_type,
       user: result.user,
     });
@@ -64,15 +71,16 @@ async function logout(_req, res) {
   clearAuthCookie(res);
   res.json({ ok: true });
 }
+
 async function me(req, res) {
   res.json(req.user);
 }
 
 async function getById(req, res) {
   const { userId } = req.params;
-  const isAdmin = req.user.rol_type === 'admin';
+  const canViewOthers = isSecurityAdmin(req.user);
   const isSelf = String(req.user.id) === String(userId);
-  if (!isAdmin && !isSelf) {
+  if (!canViewOthers && !isSelf) {
     return res
       .status(403)
       .json({ error: 'No puedes ver el perfil de otro usuario' });
@@ -90,10 +98,10 @@ async function getById(req, res) {
 
 async function remove(req, res) {
   try {
-    await usersService.softDelete(req.params.userId);
+    await usersService.softDelete(req.params.userId, req.user.id);
     res.json({ affectedRows: 1 });
   } catch (error) {
-    sendServerError(res, error, 'users.remove');
+    sendServiceError(res, error, 'users.remove');
   }
 }
 
@@ -112,6 +120,31 @@ async function patch(req, res) {
   }
 }
 
+async function patchByAdmin(req, res) {
+  try {
+    const row = await usersService.patchUserByAdmin(
+      req.params.userId,
+      req.body,
+      req.user.id
+    );
+    res.json(row);
+  } catch (error) {
+    sendServiceError(res, error, 'users.patchByAdmin');
+  }
+}
+
+async function changePasswordByAdmin(req, res) {
+  try {
+    const row = await usersService.changePasswordByAdmin(
+      req.params.userId,
+      req.body.password
+    );
+    res.json(row);
+  } catch (error) {
+    sendServiceError(res, error, 'users.changePasswordByAdmin');
+  }
+}
+
 module.exports = {
   list,
   getByUsername,
@@ -122,4 +155,6 @@ module.exports = {
   getById,
   remove,
   patch,
+  patchByAdmin,
+  changePasswordByAdmin,
 };

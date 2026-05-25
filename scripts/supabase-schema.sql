@@ -1,7 +1,7 @@
 -- =============================================================================
 -- ESQUEMA COMPLETO Aliadas (Supabase / Postgres) — archivo único en el repo.
 -- Incluye: Storage bucket noticias, public.news, users, customers (vacía hasta uso por API), CMS.
--- Copiá y pegá todo este archivo en Supabase → SQL Editor.
+-- Copiá y pegá todo en Supabase → SQL Editor. Luego: npm run seed
 -- =============================================================================
 
 
@@ -79,9 +79,13 @@ create table if not exists public.users (
   last_name text,
   username text unique not null,
   password text not null,
-  rol_type text not null default 'user',
-  is_deleted boolean not null default false
+  rol_type text not null default 'user', -- valores panel: admin (total), cms_admin (CMS sin Seguridad)
+  is_deleted boolean not null default false,
+  is_active boolean not null default true
 );
+
+-- Migración en BD existente:
+-- alter table public.users add column if not exists is_active boolean not null default true;
 
 create unique index if not exists users_username_lower_idx on public.users (lower(username));
 
@@ -90,9 +94,36 @@ alter table public.users enable row level security;
 revoke all on public.users from public;
 grant all on public.users to service_role;
 
--- Opcional: insert manual (mejor `node scripts/supabase-seed.js` con scripts/seed/users_seed.json):
+-- Usuarios iniciales: npm run seed (scripts/seed/users_seed.json)
 -- insert into public.users (name, last_name, username, password, rol_type, is_deleted)
 -- values ('Admin', 'Sistema', 'admin', '<hash bcrypt>', 'admin', false);
+
+
+-- ----------------------------------------------------------------------------- --
+-- calculator_parameters (salary calculator legal values by year)
+-- ----------------------------------------------------------------------------- --
+
+create table if not exists public.calculator_parameters (
+  year integer primary key,
+  minimum_wage integer not null,
+  transport_allowance integer not null,
+  is_deleted boolean not null default false
+);
+
+alter table public.calculator_parameters enable row level security;
+
+drop policy if exists "calculator_parameters_select_anon" on public.calculator_parameters;
+create policy "calculator_parameters_select_anon"
+  on public.calculator_parameters
+  for select
+  to anon, authenticated
+  using (is_deleted = false);
+
+revoke all on public.calculator_parameters from public;
+grant select on public.calculator_parameters to anon, authenticated;
+grant all on public.calculator_parameters to service_role;
+
+-- Datos iniciales: npm run seed
 
 
 -- ----------------------------------------------------------------------------- --

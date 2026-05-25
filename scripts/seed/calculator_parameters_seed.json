@@ -1,0 +1,19 @@
+[
+  { "year": 2026, "minimum_wage": 1750905, "transport_allowance": 249095 },
+  { "year": 2025, "minimum_wage": 1423500, "transport_allowance": 200000 },
+  { "year": 2024, "minimum_wage": 1300000, "transport_allowance": 162000 },
+  { "year": 2023, "minimum_wage": 1160000, "transport_allowance": 140606 },
+  { "year": 2022, "minimum_wage": 1000000, "transport_allowance": 117172 },
+  { "year": 2021, "minimum_wage": 908526, "transport_allowance": 106454 },
+  { "year": 2020, "minimum_wage": 877803, "transport_allowance": 102854 },
+  { "year": 2019, "minimum_wage": 828116, "transport_allowance": 97032 },
+  { "year": 2018, "minimum_wage": 781242, "transport_allowance": 88211 },
+  { "year": 2017, "minimum_wage": 737717, "transport_allowance": 83140 },
+  { "year": 2016, "minimum_wage": 689455, "transport_allowance": 77700 },
+  { "year": 2015, "minimum_wage": 644350, "transport_allowance": 74000 },
+  { "year": 2014, "minimum_wage": 616000, "transport_allowance": 72000 },
+  { "year": 2013, "minimum_wage": 589500, "transport_allowance": 70500 },
+  { "year": 2012, "minimum_wage": 566700, "transport_allowance": 67800 },
+  { "year": 2011, "minimum_wage": 535600, "transport_allowance": 63600 },
+  { "year": 2010, "minimum_wage": 515000, "transport_allowance": 61500 }
+]

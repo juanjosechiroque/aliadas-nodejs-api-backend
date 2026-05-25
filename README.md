@@ -1,64 +1,119 @@
-# Aliadas API (Node.js)
+# Aliadas API
 
-API Express para la app Aliadas: contenido CMS (mis derechos, empleador, actualidad), usuarios y login con JWT (cookie HttpOnly según entorno).
+Express + Supabase. CMS, usuarios, noticias, calculadora.
 
 ## Requisitos
 
-- **Node.js 24+** (`engines` en `package.json`). Con [nvm](https://github.com/nvm-sh/nvm): `nvm use` en la raíz del backend (archivo **`.nvmrc`**).
-- Proyecto **Supabase** con tablas expuestas por REST según los modelos en `src/api/`.
+- Node.js **24+** (`.nvmrc`: `nvm use`)
+- Proyecto Supabase (URL + service role key)
 
-## Arranque rápido
+## Entorno nuevo (Supabase vacío)
+
+1. SQL Editor → ejecutar `scripts/supabase-schema.sql`
+2. `cp .env.example .env` — completar `JWT_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (`PORT=3330` en local)
+3. `npm install` → `npm run seed` (opcional: `npm run seed:news`)
+
+Usuarios seed: `admin` y `cms_admin`, contraseña `changeme`.
+
+## Desarrollo
 
 ```bash
-cp .env.example .env
-# Editar .env: JWT_SECRET, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (y opcionalmente anon).
-
 npm install
 npm run dev
 ```
 
-Por defecto el servidor escucha en `PORT` del entorno o el valor por defecto definido en la config (`server.js` / `src/config`).
+Escucha en `PORT` (`.env`, default 3330).
 
 ## Scripts
 
-| Script                            | Descripción                                               |
-| --------------------------------- | --------------------------------------------------------- |
-| `npm run dev`                     | Desarrollo con nodemon.                                   |
-| `npm start`                       | Producción (`node server.js`).                            |
-| `npm run lint`                    | ESLint sin warnings.                                      |
-| `npm run lint:fix`                | ESLint con autofix.                                       |
-| `npm run format` / `format:check` | Prettier.                                                 |
-| `npm run validate`                | `lint` + `format:check`.                                  |
-| `npm run test:smoke`              | Smoke contra API levantada (ver `scripts/smoke-test.js`). |
+| Script | Uso |
+|--------|-----|
+| `npm run dev` / `npm start` | API |
+| `npm run seed` | CMS, usuarios, parámetros calculadora |
+| `npm run seed:news` | Noticias + imágenes (opcional) |
 
-## Variables de entorno
+Variables: `.env.example`.
 
-Documentadas en **`.env.example`**. Las imprescindibles para arrancar suelen ser:
+## Rutas
 
-- **`JWT_SECRET`** y **`JWT_EXPIRES_IN`**
-- **`SUPABASE_URL`** y **`SUPABASE_SERVICE_ROLE_KEY`**
-- **`NODE_ENV`**: en `production` los errores no exponen detalles internos al cliente (misma regla en `sendServerError` y en el middleware global de Express).
+Prefijo de la API: `/api`. Raíz del servidor: `GET /` (metadatos del servicio).
 
-## Seguridad (resumen)
+**Autenticación:** cookie HttpOnly `aliadas_access_token` o cabecera `Authorization: Bearer <token>`.
 
-- **Errores 500**: respuesta genérica al cliente en producción; detalle en logs del servidor (`sendServerError`, middleware global en `src/app.js`).
-- **HTML / XSS**: contenido enriquecido (actualidad y bloques CMS `description` / `title_*` / `text_*`) se sanea con **`sanitize-html`** al guardar y al servir por GET.
-- **Imágenes de noticias**: al crear noticia, la imagen se reencodea con **sharp** (tamaño máximo ~1920 px en el lado largo, JPEG con calidad ~82 o PNG comprimido si lleva transparencia).
+| Auth | Quién |
+|------|--------|
+| — | Público |
+| JWT | Usuario activo con sesión válida |
+| Panel | Rol `admin` o `cms_admin` |
+| Seguridad | Solo rol `admin` |
 
-## Generador CMS
+### Sistema
 
-Para regenerar capas service/controller/router de módulos CMS alineados con el modelo:
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | `/` | — | Nombre del servicio y enlaces útiles |
+| GET | `/api/health` | — | Estado del API (`status: ok`) |
 
-```bash
-node scripts/generate-content-layers.js
-```
+### Usuarios (`/api/users`)
 
-Ver `scripts/README.md` si hay notas adicionales.
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| POST | `/api/users/login` | — | Inicio de sesión; devuelve cookie JWT |
+| POST | `/api/users/logout` | — | Cierra sesión (borra cookie) |
+| GET | `/api/users/me` | JWT | Usuario de la sesión actual |
+| GET | `/api/users/` | Seguridad | Lista usuarios del panel |
+| GET | `/api/users/username/:username` | Seguridad | Usuario por nombre de login |
+| POST | `/api/users/create` | Seguridad | Alta de usuario |
+| GET | `/api/users/:userId` | JWT | Detalle de un usuario |
+| PATCH | `/api/users/:userId` | JWT | Actualización (perfil propio u operación permitida) |
+| PATCH | `/api/users/:userId/admin` | Seguridad | Edición admin (rol, activo, etc.) |
+| PATCH | `/api/users/:userId/admin/password` | Seguridad | Cambio de contraseña por admin |
+| DELETE | `/api/users/:userId` | Seguridad | Baja lógica de usuario |
 
-## Estructura
+### Actualidad / noticias (`/api/actualidad`)
 
-- `server.js` — entrada.
-- `src/app.js` — Express, middleware, rutas.
-- `src/api/` — routers, controladores, servicios y modelos por recurso.
-- `src/utils/` — utilidades (`api-errors`, saneado HTML, etc.).
-- `src/middleware/` — auth, rate limit, etc.
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | `/api/actualidad/` | — | Listado público de noticias |
+| GET | `/api/actualidad/:idContent` | — | Detalle de una noticia |
+| POST | `/api/actualidad/create` | Panel | Crear noticia (multipart, imagen) |
+| PATCH | `/api/actualidad/:id` | Panel | Editar noticia por id de fila |
+| DELETE | `/api/actualidad/:noticiaId` | Panel | Eliminar noticia |
+
+### CMS — Mis derechos y empleador
+
+Mismo patrón en cada prefijo: `GET …/:idContent` (público, bloque por id de contenido), `PATCH …/:id` (Panel, actualiza la fila CMS).
+
+| Prefijo | Tema |
+|---------|------|
+| `/api/libertadsindical` | Libertad sindical |
+| `/api/violenciaacoso` | Violencia y acoso |
+| `/api/beneficios` | Beneficios |
+| `/api/contratacion` | Contratación |
+| `/api/trabajodomestico` | Trabajo doméstico |
+| `/api/jornada` | Jornada |
+| `/api/salario` | Salario |
+| `/api/seguridad` | Seguridad social |
+| `/api/enfermedades` | Enfermedades |
+| `/api/licencias` | Licencias |
+| `/api/empleador` | Empleador |
+
+Ejemplo: `GET /api/jornada/3`, `PATCH /api/jornada/1`.
+
+### Registros (`/api/customers`)
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | `/api/customers/` | Panel | Lista registros (clientes) |
+| POST | `/api/customers/create` | Panel | Crear registro |
+| DELETE | `/api/customers/:idCustomer` | Panel | Eliminar registro |
+
+### Calculadora (`/api/calculadora`)
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| GET | `/api/calculadora/parametros` | — | Parámetros legales por año (SMMLV, auxilio transporte) |
+| GET | `/api/calculadora/parametros/:anio` | — | Parámetros de un año |
+| POST | `/api/calculadora/parametros` | Panel | Crear año |
+| PATCH | `/api/calculadora/parametros/:anio` | Panel | Actualizar año |
+| DELETE | `/api/calculadora/parametros/:anio` | Panel | Baja lógica del año |

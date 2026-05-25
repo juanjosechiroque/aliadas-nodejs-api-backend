@@ -15,6 +15,7 @@ const apiEnfermedades = require('./misderechos/enfermedades/enfermedades.router'
 const apiLicencias = require('./misderechos/licencias/licencias.router');
 const apiEmpleador = require('./empleador/empleador.router');
 const apiCustomers = require('./customers/customers.router');
+const apiCalculadora = require('./calculadora/calculadora.router');
 
 router.use('/health', apiHealthRouter);
 router.use('/users', apiUsersRouter);
@@ -31,5 +32,6 @@ router.use('/enfermedades', apiEnfermedades);
 router.use('/licencias', apiLicencias);
 router.use('/empleador', apiEmpleador);
 router.use('/customers', apiCustomers);
+router.use('/calculadora', apiCalculadora);
 
 module.exports = router;

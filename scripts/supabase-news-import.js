@@ -4,10 +4,6 @@ const path = require('path');
 const sharp = require('sharp');
 const dotenv = require('dotenv');
 
-const LOCAL_SUPABASE_URL = '';
-const LOCAL_SERVICE_ROLE_KEY = '';
-const LOCAL_NEWS_BUCKET = 'aliadas-news';
-
 const scriptsDir = __dirname;
 const backendRoot = path.join(scriptsDir, '..');
 const frontSiblingAssets = path.join(
@@ -28,23 +24,13 @@ const jsonPath =
 const assetsRoot =
   (process.env.NOTICIAS_ASSETS_ROOT || '').trim() || frontSiblingAssets;
 
-const supabaseUrl = (process.env.SUPABASE_URL || LOCAL_SUPABASE_URL || '')
-  .trim()
-  .replace(/\/$/, '');
-const serviceKey = (
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  LOCAL_SERVICE_ROLE_KEY ||
-  ''
-).trim();
-const bucket = (
-  process.env.SUPABASE_NEWS_BUCKET ||
-  LOCAL_NEWS_BUCKET ||
-  'aliadas-news'
-).trim();
+const supabaseUrl = (process.env.SUPABASE_URL || '').trim().replace(/\/$/, '');
+const serviceKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
+const bucket = (process.env.SUPABASE_NEWS_BUCKET || 'aliadas-news').trim();
 
 if (!supabaseUrl || !serviceKey) {
   console.error(
-    'Faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY (.env del backend o aliadas-front), o LOCAL_* en scripts/supabase-news-import.js.'
+    'Faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY en .env (backend o aliadas-front).'
   );
   process.exit(1);
 }

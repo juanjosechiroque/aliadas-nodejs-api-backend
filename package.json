@@ -10,7 +10,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "validate": "npm run lint && npm run format:check",
-    "test:smoke": "node scripts/smoke-test.js"
+    "seed": "node scripts/supabase-seed.js",
+    "seed:news": "node scripts/supabase-news-import.js"
   },
   "engines": {
     "node": ">=24.0.0"

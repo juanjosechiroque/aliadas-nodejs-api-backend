@@ -2,9 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcrypt');
 
-const LOCAL_SUPABASE_URL = '';
-const LOCAL_SERVICE_ROLE_KEY = '';
-
 const backendRoot = path.join(__dirname, '..');
 const scriptsDir = __dirname;
 const seedDir = path.join(scriptsDir, 'seed');
@@ -32,14 +29,8 @@ function loadEnvFiles() {
 }
 
 function credentials() {
-  const url = (process.env.SUPABASE_URL || LOCAL_SUPABASE_URL || '')
-    .trim()
-    .replace(/\/$/, '');
-  const key = (
-    process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    LOCAL_SERVICE_ROLE_KEY ||
-    ''
-  ).trim();
+  const url = (process.env.SUPABASE_URL || '').trim().replace(/\/$/, '');
+  const key = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
   return { url, key };
 }
 
@@ -74,10 +65,12 @@ async function upsertUserByUsername(url, key, row) {
     },
     body: JSON.stringify(row),
   });
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`users: ${res.status} ${text}`);
   }
+
   const data = await res.json();
   const out = Array.isArray(data) ? data[0] : data;
   if (out && out.password) delete out.password;
@@ -101,26 +94,61 @@ function normalizeUserRow(raw) {
   delete out.password;
   if (!plain) {
     throw new Error(
-      'users_seed.json: falta password_plain (texto plano). El seed la convierte a bcrypt antes de guardar. Ver scripts/README.md'
+      'users_seed.json: falta password_plain (el seed la convierte a bcrypt antes de guardar).'
     );
   }
   out.password = bcrypt.hashSync(plain, 10);
   return out;
 }
 
-function buildUserRowFromSeed() {
+function buildUserRowsFromSeed() {
   const seedPath = path.join(seedDir, 'users_seed.json');
   if (!fs.existsSync(seedPath)) {
     throw new Error(`Falta ${seedPath}`);
   }
-  const row = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
-  return normalizeUserRow(row);
+  const raw = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
+  const rows = Array.isArray(raw) ? raw : [raw];
+  return rows.map(normalizeUserRow);
 }
 
 async function seedUsers(url, key) {
   console.log('\n--- users (scripts/seed/users_seed.json) ---\n');
-  const row = buildUserRowFromSeed();
-  await upsertUserByUsername(url, key, row);
+  const rows = buildUserRowsFromSeed();
+  for (const row of rows) {
+    await upsertUserByUsername(url, key, row);
+  }
+}
+
+async function seedCalculatorParameters(url, key) {
+  console.log(
+    '\n--- calculator_parameters (seed/calculator_parameters_seed.json) ---\n'
+  );
+  const seedPath = path.join(seedDir, 'calculator_parameters_seed.json');
+  const rows = JSON.parse(fs.readFileSync(seedPath, 'utf8'));
+  for (const row of rows) {
+    const endpoint = `${url}/rest/v1/calculator_parameters?on_conflict=year`;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        apikey: key,
+        Authorization: `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({ ...row, is_deleted: false }),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      if (res.status === 404 && /calculator_parameters/i.test(text)) {
+        console.error(
+          '\nFalta la tabla public.calculator_parameters en Supabase.\n' +
+            'Ejecutá scripts/supabase-schema.sql en el SQL Editor.\n'
+        );
+      }
+      throw new Error(`calculator_parameters: ${res.status} ${text}`);
+    }
+    console.log('OK calculator_parameters year=', row.year);
+  }
 }
 
 async function main() {
@@ -133,14 +161,11 @@ async function main() {
     process.exit(1);
   }
 
-  if (process.argv.length > 2) {
-    console.error('Uso: node scripts/supabase-seed.js');
-    process.exit(1);
-  }
-
+  console.log('=== Seed Supabase (CMS + users + calculator_parameters) ===\n');
   await seedAllCms(url, key);
   await seedUsers(url, key);
-  console.log('\nListo. Noticias: node scripts/supabase-news-import.js\n');
+  await seedCalculatorParameters(url, key);
+  console.log('\nListo. Opcional: npm run seed:news\n');
 }
 
 main().catch((e) => {

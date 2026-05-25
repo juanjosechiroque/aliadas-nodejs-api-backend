@@ -1,11 +1,24 @@
+const { isProductionEnv } = require('../config');
+
 const ACCESS_TOKEN_COOKIE = 'aliadas_access_token';
 
+/**
+ * HttpOnly siempre. Producción: Secure + SameSite=None (front y API en orígenes distintos).
+ * Desarrollo: Lax sin Secure (local con proxy same-origin en ng serve).
+ */
 function baseCookieOptions() {
-  const isProd = process.env.NODE_ENV === 'production';
+  if (isProductionEnv) {
+    return {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    };
+  }
   return {
     httpOnly: true,
-    secure: Boolean(isProd),
-    sameSite: isProd ? 'none' : 'lax',
+    secure: false,
+    sameSite: 'lax',
     path: '/',
   };
 }

@@ -2,6 +2,18 @@ const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config');
 const supabaseUsers = require('../api/users/users.model');
 const { ACCESS_TOKEN_COOKIE } = require('./auth-cookie');
+
+const PANEL_ADMIN_ROLES = new Set(['admin', 'cms_admin']);
+const SECURITY_ADMIN_ROLE = 'admin';
+
+function isPanelAdmin(user) {
+  return Boolean(user && PANEL_ADMIN_ROLES.has(user.rol_type));
+}
+
+function isSecurityAdmin(user) {
+  return Boolean(user && user.rol_type === SECURITY_ADMIN_ROLE);
+}
+
 function extractBearerToken(authorizationHeader) {
   if (authorizationHeader == null || typeof authorizationHeader !== 'string') {
     return null;
@@ -47,7 +59,7 @@ const checkToken = async (req, res, next) => {
 
   try {
     const usuario = await supabaseUsers.fetchUserById(obj.userId);
-    if (!usuario || usuario.is_deleted) {
+    if (!usuario || usuario.is_deleted || usuario.is_active === false) {
       return res.status(401).json({ error: 'Usuario no válido' });
     }
     const { password: _pw, ...safe } = usuario;
@@ -59,8 +71,8 @@ const checkToken = async (req, res, next) => {
   }
 };
 
-const checkAdmin = (req, res, next) => {
-  if (req.user && req.user.rol_type === 'admin') {
+const checkPanelAdmin = (req, res, next) => {
+  if (isPanelAdmin(req.user)) {
     next();
   } else {
     return res
@@ -69,9 +81,26 @@ const checkAdmin = (req, res, next) => {
   }
 };
 
+const checkSecurityAdmin = (req, res, next) => {
+  if (isSecurityAdmin(req.user)) {
+    next();
+  } else {
+    return res
+      .status(403)
+      .json({ error: 'No tienes permiso para gestionar usuarios' });
+  }
+};
+
+/** @deprecated Use checkPanelAdmin */
+const checkAdmin = checkPanelAdmin;
+
 module.exports = {
   checkToken,
+  checkPanelAdmin,
+  checkSecurityAdmin,
   checkAdmin,
+  isPanelAdmin,
+  isSecurityAdmin,
   extractBearerToken,
   getAccessTokenFromRequest,
 };

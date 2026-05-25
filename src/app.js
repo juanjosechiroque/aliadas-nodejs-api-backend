@@ -11,6 +11,9 @@ const apiRouter = require('./api');
 const BODY_LIMIT = '1mb';
 
 const app = express();
+if (process.env.VERCEL === '1' || process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 app.use(helmet());
 app.use(cors(buildCorsOptions()));
 
