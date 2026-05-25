@@ -1,9 +1,6 @@
 const router = require('express').Router();
 const rateLimit = require('express-rate-limit');
-const {
-  checkToken,
-  checkSecurityAdmin,
-} = require('../../middleware/auth');
+const { checkToken, checkSecurityAdmin } = require('../../middleware/auth');
 const usersController = require('./users.controller');
 
 const loginLimiter = rateLimit({
@@ -32,14 +29,24 @@ router.get(
 );
 router.post('/create', checkToken, checkSecurityAdmin, usersController.create);
 router.get('/:userId', checkToken, usersController.getById);
-router.delete('/:userId', checkToken, checkSecurityAdmin, usersController.remove);
+router.delete(
+  '/:userId',
+  checkToken,
+  checkSecurityAdmin,
+  usersController.remove
+);
 router.patch(
   '/:userId/admin/password',
   checkToken,
   checkSecurityAdmin,
   usersController.changePasswordByAdmin
 );
-router.patch('/:userId/admin', checkToken, checkSecurityAdmin, usersController.patchByAdmin);
+router.patch(
+  '/:userId/admin',
+  checkToken,
+  checkSecurityAdmin,
+  usersController.patchByAdmin
+);
 router.patch('/:userId', checkToken, usersController.patch);
 
 module.exports = router;

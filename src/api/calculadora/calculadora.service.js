@@ -3,9 +3,12 @@ const model = require('./calculadora.model');
 function parsePositiveInt(value, fieldName) {
   const n = Number.parseInt(String(value), 10);
   if (!Number.isFinite(n) || n <= 0) {
-    throw Object.assign(new Error(`${fieldName} debe ser un número positivo.`), {
-      statusCode: 400,
-    });
+    throw Object.assign(
+      new Error(`${fieldName} debe ser un número positivo.`),
+      {
+        statusCode: 400,
+      }
+    );
   }
   return n;
 }

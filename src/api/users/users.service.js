@@ -3,7 +3,13 @@ const userModel = require('./users.model');
 const { createToken } = require('../../utils/jwt');
 
 const SELF_UPDATE_FIELDS = ['name', 'last_name', 'username', 'password'];
-const ADMIN_UPDATE_FIELDS = ['name', 'last_name', 'username', 'rol_type', 'is_active'];
+const ADMIN_UPDATE_FIELDS = [
+  'name',
+  'last_name',
+  'username',
+  'rol_type',
+  'is_active',
+];
 const ALLOWED_PANEL_ROLES = ['admin', 'cms_admin'];
 
 function stripPassword(user) {
@@ -30,9 +36,8 @@ function normalizePanelRole(rolType) {
 
 async function countActiveAdmins() {
   const rows = await userModel.fetchAllActiveUsers();
-  return rows.filter(
-    (row) => row.rol_type === 'admin' && isUserActive(row)
-  ).length;
+  return rows.filter((row) => row.rol_type === 'admin' && isUserActive(row))
+    .length;
 }
 
 async function listActiveUsersSafe() {
@@ -61,7 +66,9 @@ async function assertCanDeactivateOrDeleteAdmin(target) {
     const adminCount = await countActiveAdmins();
     if (adminCount <= 1) {
       throw Object.assign(
-        new Error('No se puede desactivar ni eliminar el último administrador activo.'),
+        new Error(
+          'No se puede desactivar ni eliminar el último administrador activo.'
+        ),
         { statusCode: 400 }
       );
     }
@@ -88,10 +95,9 @@ async function softDelete(id, actorId) {
 
 async function createUser(body) {
   if (!body?.username || !body?.password) {
-    throw Object.assign(
-      new Error('Usuario y contraseña son obligatorios.'),
-      { statusCode: 400 }
-    );
+    throw Object.assign(new Error('Usuario y contraseña son obligatorios.'), {
+      statusCode: 400,
+    });
   }
 
   if (String(body.password).length < 6) {
@@ -209,7 +215,10 @@ async function patchUserByAdmin(userId, body, actorId) {
   if (Object.prototype.hasOwnProperty.call(payload, 'rol_type')) {
     payload.rol_type = normalizePanelRole(payload.rol_type);
 
-    if (String(actorId) === String(userId) && payload.rol_type !== existing.rol_type) {
+    if (
+      String(actorId) === String(userId) &&
+      payload.rol_type !== existing.rol_type
+    ) {
       throw Object.assign(
         new Error('No puedes cambiar tu propio rol desde el panel.'),
         { statusCode: 400 }
@@ -220,7 +229,9 @@ async function patchUserByAdmin(userId, body, actorId) {
       const adminCount = await countActiveAdmins();
       if (adminCount <= 1 && isUserActive(existing)) {
         throw Object.assign(
-          new Error('No se puede cambiar el rol del último administrador activo.'),
+          new Error(
+            'No se puede cambiar el rol del último administrador activo.'
+          ),
           { statusCode: 400 }
         );
       }
