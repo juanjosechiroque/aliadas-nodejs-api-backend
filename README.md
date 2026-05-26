@@ -38,7 +38,7 @@ Variables: `.env.example`.
 
 Prefijo de la API: `/api`. Raíz del servidor: `GET /` (metadatos del servicio).
 
-**Autenticación:** cookie HttpOnly `aliadas_access_token` o cabecera `Authorization: Bearer <token>`.
+**Autenticación:** cookie HttpOnly `aliadas_access_token` (`Secure`, `SameSite=None`). El front envía la cookie con `withCredentials: true` en cada petición al API.
 
 | Auth      | Quién                            |
 | --------- | -------------------------------- |
@@ -58,7 +58,7 @@ Prefijo de la API: `/api`. Raíz del servidor: `GET /` (metadatos del servicio).
 
 | Método | Ruta                                | Auth      | Descripción                                         |
 | ------ | ----------------------------------- | --------- | --------------------------------------------------- |
-| POST   | `/api/users/login`                  | —         | Inicio de sesión; devuelve cookie JWT               |
+| POST   | `/api/users/login`                  | —         | Inicio de sesión; cookie HttpOnly JWT               |
 | POST   | `/api/users/logout`                 | —         | Cierra sesión (borra cookie)                        |
 | GET    | `/api/users/me`                     | JWT       | Usuario de la sesión actual                         |
 | GET    | `/api/users/`                       | Seguridad | Lista usuarios del panel                            |

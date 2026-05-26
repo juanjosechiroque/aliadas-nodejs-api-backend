@@ -15,7 +15,8 @@ if (!jwtExpiresIn || String(jwtExpiresIn).trim() === '') {
   console.error('FATAL: JWT_EXPIRES_IN es obligatorio y no puede estar vacío.');
   process.exit(1);
 }
-const isProductionEnv = process.env.NODE_ENV === 'production';
+const isProductionEnv =
+  process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
 
 module.exports = {
   port,

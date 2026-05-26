@@ -2,10 +2,6 @@ const { isProductionEnv } = require('../config');
 
 const ACCESS_TOKEN_COOKIE = 'aliadas_access_token';
 
-/**
- * HttpOnly siempre. Producción: Secure + SameSite=None (front y API en orígenes distintos).
- * Desarrollo: Lax sin Secure (local con proxy same-origin en ng serve).
- */
 function baseCookieOptions() {
   if (isProductionEnv) {
     return {
