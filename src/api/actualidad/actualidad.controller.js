@@ -67,9 +67,30 @@ async function create(req, res) {
 async function patch(req, res) {
   const { id } = req.params;
   try {
-    const out = await actualidadService.patchNews(id, req.body);
+    const titulo = String(req.body.titulo ?? '').trim();
+    if (!titulo) {
+      return res.status(400).json({ error: 'El título es obligatorio.' });
+    }
+    const contenidoRaw = String(req.body.contenido ?? '');
+    if (!actualidadService.plainTextFromHtml(contenidoRaw)) {
+      return res
+        .status(400)
+        .json({ error: 'El detalle o contenido es obligatorio.' });
+    }
+
+    const out = req.file
+      ? await actualidadService.patchNewsWithImage(id, req.file, req.body)
+      : await actualidadService.patchNews(id, req.body);
+
+    if (!out.affectedRows) {
+      return res.status(404).json({ error: 'Noticia no encontrada' });
+    }
     res.json(out);
   } catch (error) {
+    const status = error.status || error.statusCode;
+    if (status === 400 && error.expose) {
+      return res.status(400).json({ error: error.message });
+    }
     sendServerError(res, error, 'actualidad.patch');
   }
 }

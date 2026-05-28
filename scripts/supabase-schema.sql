@@ -158,6 +158,7 @@ grant all on public.customers to service_role;
 create table if not exists public.cms_beneficios (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -220,6 +221,7 @@ grant all on public.cms_beneficios to service_role;
 create table if not exists public.cms_contratacion (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -263,6 +265,7 @@ grant all on public.cms_contratacion to service_role;
 create table if not exists public.cms_empleador (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -306,6 +309,7 @@ grant all on public.cms_empleador to service_role;
 create table if not exists public.cms_enfermedades (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -353,6 +357,7 @@ grant all on public.cms_enfermedades to service_role;
 create table if not exists public.cms_jornada (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -396,6 +401,7 @@ grant all on public.cms_jornada to service_role;
 create table if not exists public.cms_licencias (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -462,6 +468,7 @@ grant all on public.cms_licencias to service_role;
 create table if not exists public.cms_libertad_sindical (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -505,6 +512,7 @@ grant all on public.cms_libertad_sindical to service_role;
 create table if not exists public.cms_salario (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -548,6 +556,7 @@ grant all on public.cms_salario to service_role;
 create table if not exists public.cms_seguridad_social (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -605,6 +614,7 @@ grant all on public.cms_seguridad_social to service_role;
 create table if not exists public.cms_trabajo_domestico (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,
@@ -647,6 +657,7 @@ grant all on public.cms_trabajo_domestico to service_role;
 create table if not exists public.cms_violencia_acoso (
   id integer primary key,
   description text,
+  youtube_url text,
   title_1 text,
   text_1 text,
   title_2 text,

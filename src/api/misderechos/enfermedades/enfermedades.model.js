@@ -1,7 +1,7 @@
 const TABLE = 'cms_enfermedades';
 const PAIR_COUNT = 12;
 
-const PATCH_KEYS = ['description'];
+const PATCH_KEYS = ['description', 'youtube_url'];
 for (let i = 1; i <= PAIR_COUNT; i++) {
   PATCH_KEYS.push(`title_${i}`, `text_${i}`);
 }

@@ -1,6 +1,6 @@
 const TABLE = 'cms_beneficios';
 
-const PATCH_KEYS = ['description'];
+const PATCH_KEYS = ['description', 'youtube_url'];
 for (let i = 1; i <= 20; i++) {
   PATCH_KEYS.push(`title_${i}`, `text_${i}`);
 }

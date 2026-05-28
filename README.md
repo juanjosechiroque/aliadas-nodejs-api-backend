@@ -15,6 +15,8 @@ Express + Supabase. CMS, usuarios, noticias, calculadora.
 
 Usuarios seed: `admin` y `cms_admin`, contraseña `changeme`.
 
+Si la base ya existía antes de añadir videos CMS: ejecutar también `scripts/migrations/add-cms-youtube-url.sql` en el SQL Editor.
+
 ## Desarrollo
 
 ```bash

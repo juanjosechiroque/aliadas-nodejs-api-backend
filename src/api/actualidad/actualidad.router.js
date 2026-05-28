@@ -1,7 +1,10 @@
 const router = require('express').Router();
 const { checkToken, checkAdmin } = require('../../middleware/auth');
 const actualidadController = require('./actualidad.controller');
-const { handleCreateUpload } = require('./actualidad.middleware');
+const {
+  handleCreateUpload,
+  handleNewsImageUpload,
+} = require('./actualidad.middleware');
 
 router.get('/', actualidadController.list);
 router.delete(
@@ -18,6 +21,12 @@ router.post(
   handleCreateUpload,
   actualidadController.create
 );
-router.patch('/:id', checkToken, checkAdmin, actualidadController.patch);
+router.patch(
+  '/:id',
+  checkToken,
+  checkAdmin,
+  handleNewsImageUpload,
+  actualidadController.patch
+);
 
 module.exports = router;

@@ -68,10 +68,39 @@ async function createNewsWithImage(file, body) {
 
 async function patchNews(id, body) {
   const safe = { ...body };
+  delete safe.imagen;
   if (safe.contenido != null) {
     safe.contenido = sanitizeRichHtml(String(safe.contenido));
   }
   return model.patchNewsFromBody(id, safe);
+}
+
+async function patchNewsWithImage(id, file, body) {
+  const row = await model.fetchNewsById(id);
+  if (!row) {
+    return { affectedRows: 0 };
+  }
+
+  const imageUrl = await model.uploadNewsImageBuffer(
+    file.buffer,
+    file.originalname,
+    file.mimetype
+  );
+
+  const safe = { ...body, imagen: imageUrl };
+  if (safe.contenido != null) {
+    safe.contenido = sanitizeRichHtml(String(safe.contenido));
+  }
+
+  const out = await model.patchNewsFromBody(id, safe);
+
+  const oldPath = model.storageObjectPathFromPublicImageUrl(row.imageUrl);
+  const newPath = model.storageObjectPathFromPublicImageUrl(imageUrl);
+  if (oldPath && oldPath !== newPath) {
+    await model.deleteStorageObjectByPath(oldPath);
+  }
+
+  return out;
 }
 
 module.exports = {
@@ -82,4 +111,5 @@ module.exports = {
   deleteNews,
   createNewsWithImage,
   patchNews,
+  patchNewsWithImage,
 };

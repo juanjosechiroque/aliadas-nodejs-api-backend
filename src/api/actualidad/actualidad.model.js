@@ -312,4 +312,6 @@ module.exports = {
   patchNewsFromBody,
   deleteNewsById,
   uploadNewsImageBuffer,
+  storageObjectPathFromPublicImageUrl,
+  deleteStorageObjectByPath,
 };

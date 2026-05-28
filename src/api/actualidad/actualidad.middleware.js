@@ -13,7 +13,7 @@ const uploadNewsImage = multer({
   },
 });
 
-function handleCreateUpload(req, res, next) {
+function handleNewsImageUpload(req, res, next) {
   uploadNewsImage.single('imagen')(req, res, (err) => {
     if (err) {
       if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
@@ -27,4 +27,7 @@ function handleCreateUpload(req, res, next) {
   });
 }
 
-module.exports = { handleCreateUpload };
+module.exports = {
+  handleCreateUpload: handleNewsImageUpload,
+  handleNewsImageUpload,
+};
